@@ -19,6 +19,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
+        ref: main  # Explicitly use main branch (change to 'master' if needed)
         token: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Set up Python
@@ -31,11 +32,13 @@ jobs:
         pip install -r requirements.txt
     
     - name: Download previous database
+      id: download_db
       uses: actions/download-artifact@v4
       with:
         name: jobs-database
         path: .
         continue-on-error: true  # First run won't have a database
+      continue-on-error: true
     
     - name: Run job scraper
       run: python main.py
@@ -71,5 +74,5 @@ jobs:
         git config --local user.name "GitHub Action"
         git add exports/
         git commit -m "Add new job postings for $(date +%Y-%m-%d)" || exit 0
-        git push
+        git push origin HEAD:main  # Explicitly push to main branch
 
