@@ -26,17 +26,9 @@ jobs:
       with:
         python-version: '3.10'
     
-    - name: Install system dependencies
-      run: |
-        sudo apt-get update
-        # Use libasound2t64 for newer Ubuntu, or let apt resolve the virtual package
-        sudo apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64
-    
     - name: Install Python dependencies
       run: |
         pip install -r requirements.txt
-        playwright install chromium
-        playwright install-deps chromium
     
     - name: Download previous database
       uses: actions/download-artifact@v4
