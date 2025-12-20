@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.db
+*.db-journal
+.env
+venv/
+env/
+.venv
+*.log
+# Keep exports folder in git
+!exports/
+
