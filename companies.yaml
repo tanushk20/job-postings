@@ -103,9 +103,9 @@ companies:
     type: workday
     url: https://vrtx.wd501.myworkdayjobs.com/vertex_careers
 
-  - name: NVIDIA
-    type: workday
-    url: https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
+  # - name: NVIDIA
+  #   type: workday
+  #   url: https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
 
   - name: Illumina
     type: workday
@@ -123,9 +123,9 @@ companies:
     type: smartrecruiters
     url: https://jobs.smartrecruiters.com/LLNL
 
-  - name: Sanofi
-    type: workday
-    url: https://sanofi.wd3.myworkdayjobs.com/SanofiCareers
+  # - name: Sanofi
+  #   type: workday
+  #   url: https://sanofi.wd3.myworkdayjobs.com/SanofiCareers
 
   # - name: Regeneron
   #   type: workday
@@ -147,9 +147,9 @@ companies:
     type: lever
     url: https://jobs.lever.co/delfidiagnostics/
 
-  - name: Labcorp
-    type: workday
-    url: https://labcorp.wd1.myworkdayjobs.com/External
+  # - name: Labcorp
+  #   type: workday
+  #   url: https://labcorp.wd1.myworkdayjobs.com/External
 
   - name: Variational AI
     type: bamboo
