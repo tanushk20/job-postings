@@ -1,0 +1,82 @@
+name: Daily Job Scraping
+
+on:
+  schedule:
+    # Run every day at 22:10 PM EST (03:10 UTC next day) - for testing
+    # EST is UTC-5, so 22:10 EST = 03:10 UTC
+    # For 6 AM EST, use: cron: '0 11 * * *' (EST is UTC-5)
+    # For 6 AM PST, use: cron: '0 14 * * *' (PST is UTC-8)
+    - cron: '10 3 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  scrape-and-email:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required to push commits
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2
+    
+    - name: Install Python dependencies
+      run: |
+        pip install -r requirements.txt
+        playwright install chromium
+        playwright install-deps chromium
+    
+    - name: Download previous database
+      uses: actions/download-artifact@v4
+      with:
+        name: jobs-database
+        path: .
+        continue-on-error: true  # First run won't have a database
+    
+    - name: Run job scraper
+      run: python main.py
+      env:
+        # Add any environment variables if needed
+        TZ: UTC
+    
+    - name: Upload database for next run
+      uses: actions/upload-artifact@v4
+      with:
+        name: jobs-database
+        path: jobs.db
+        retention-days: 30
+    
+    - name: Export new jobs to CSV
+      id: export
+      run: |
+        python export_new_jobs.py
+        # Check if any CSV files were created in exports directory
+        if find exports -name "*.csv" -type f | grep -q .; then
+          echo "has_jobs=true" >> $GITHUB_OUTPUT
+          echo "Found new jobs"
+        else
+          echo "has_jobs=false" >> $GITHUB_OUTPUT
+          echo "No new jobs found"
+        fi
+      continue-on-error: true
+    
+    - name: Commit and push CSV files
+      if: steps.export.outputs.has_jobs == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add exports/
+        git commit -m "Add new job postings for $(date +%Y-%m-%d)" || exit 0
+        git push
+
