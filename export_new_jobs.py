@@ -59,7 +59,7 @@ def export_new_jobs_to_csv():
     return len(jobs), output_file
 
 
-def export_top_jobs_by_score(limit=20):
+def export_top_jobs_by_score(limit=50):
     """Export top N jobs by score to CSV, regardless of is_new status."""
     conn = sqlite3.connect(DB_PATH)
     
