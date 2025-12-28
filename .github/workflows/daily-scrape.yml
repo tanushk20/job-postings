@@ -19,7 +19,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        ref: master  # Explicitly use master branch
+        ref: main  # Explicitly use master branch
         token: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Set up Python
@@ -74,5 +74,5 @@ jobs:
         git config --local user.name "GitHub Action"
         git add exports/
         git commit -m "Add new job postings for $(date +%Y-%m-%d)" || exit 0
-        git push origin HEAD:master  # Explicitly push to master branch
+        git push origin HEAD:main  # Explicitly push to master branch
 

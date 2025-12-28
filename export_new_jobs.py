@@ -51,8 +51,6 @@ def export_new_jobs_to_csv():
             writer.writerow(job)
     
     # Mark exported jobs as not new
-    conn.execute("UPDATE jobs SET is_new = 0 WHERE is_new = 1")
-    conn.commit()
     conn.close()
     
     print(f"Exported {len(jobs)} new jobs to {output_file}")
@@ -63,18 +61,19 @@ def export_top_jobs_by_score(limit=50):
     """Export top N jobs by score to CSV, regardless of is_new status."""
     conn = sqlite3.connect(DB_PATH)
     
+    today = datetime.now().strftime("%Y-%m-%d")
+
     cur = conn.execute(
         """
         SELECT source, company, job_id, title, location, url, score, first_seen, last_seen
         FROM jobs
+        WHERE DATE(first_seen) = ?
         ORDER BY score DESC, last_seen DESC
-        LIMIT ?
         """,
-        (limit,)
+        (today,)
     )
-    
+        
     jobs = cur.fetchall()
-    conn.close()
     
     if not jobs:
         print("No jobs found.")
